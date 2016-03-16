@@ -1,0 +1,15 @@
+package com.glennji;
+
+import android.opengl.GLSurfaceView.Renderer;
+
+public class ZomEngine {
+	private Renderer renderer;
+	
+	public ZomEngine() {
+		renderer = new ZomRenderer();
+	}
+
+	public Renderer getRenderer() {
+		return renderer;
+	}
+}

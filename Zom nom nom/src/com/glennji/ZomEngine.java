@@ -1,0 +1,39 @@
+package com.glennji;
+
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLDisplay;
+
+import android.app.Application;
+import android.opengl.GLSurfaceView;
+import android.opengl.GLSurfaceView.Renderer;
+import android.view.View;
+
+public class ZomEngine {
+	private Renderer renderer;
+	private Application application;
+	
+	public ZomEngine(Application app) {
+		application = app;
+		renderer = new ZomRenderer();
+	}
+	
+	public View getContentView() {
+		// For now, return a GLSurfaceView. In the future we may want an overlayed View
+		GLSurfaceView glView = new GLSurfaceView(application);
+		glView.setEGLConfigChooser(new GLSurfaceView.EGLConfigChooser() {
+			public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {
+				// Ensure that we get a 16bit framebuffer. Otherwise, we'll fall
+				// back to Pixelflinger on some device (read: Samsung I7500)
+				int[] attributes = new int[] { EGL10.EGL_DEPTH_SIZE, 16,
+						EGL10.EGL_NONE };
+				EGLConfig[] configs = new EGLConfig[1];
+				int[] result = new int[1];
+				egl.eglChooseConfig(display, attributes, configs, 1, result);
+				return configs[0];
+			}
+		});
+		glView.setRenderer(renderer);
+		return glView;
+	}
+}
